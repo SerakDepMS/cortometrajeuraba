@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urabá - Tierra de Contrastes</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #2c3e50;
+        --accent-color: #e74c3c;
+        --text-color: #ffffff;
+        --dark-overlay: rgba(0, 0, 0, 0.7);
+        --transition-slow: 1.5s;
+        --transition-normal: 0.8s;
+        --transition-fast: 0.3s;
+      }
+
+      body {
+        font-family: "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif;
+        background-color: #000;
+        color: var(--text-color);
+        overflow: hidden;
+        height: 100vh;
+        line-height: 1.6;
+      }
+
+      #title-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #000 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+        text-align: center;
+        padding: 20px;
+      }
+
+      #main-title {
+        font-size: 4.5rem;
+        margin-bottom: 20px;
+        text-align: center;
+        text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        animation: titlePulse 4s infinite;
+        font-weight: 700;
+        letter-spacing: 3px;
+      }
+
+      #subtitle {
+        font-size: 1.8rem;
+        margin-bottom: 60px;
+        text-align: center;
+        opacity: 0.9;
+        font-weight: 300;
+        max-width: 600px;
+      }
+
+      #start-btn {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        padding: 18px 50px;
+        font-size: 1.3rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all var(--transition-normal) ease;
+        font-weight: 500;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #start-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.7s;
+      }
+
+      #start-btn:hover {
+        background: white;
+        color: black;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      #start-btn:hover::before {
+        left: 100%;
+      }
+
+      #slideshow-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 2s ease;
+      }
+
+      #slideshow-container.active {
+        opacity: 1;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity var(--transition-slow) ease;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transform: scale(1.1);
+        filter: brightness(0.9);
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      .slide-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          transparent 0%,
+          var(--dark-overlay) 100%
+        );
+        z-index: 2;
+      }
+
+      .concept-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 40px;
+        z-index: 3;
+        display: flex;
+        justify-content: center;
+      }
+
+      .concept {
+        font-size: 1.8rem;
+        max-width: 900px;
+        text-align: center;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        line-height: 1.5;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all var(--transition-normal) ease;
+        font-weight: 500;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 20px 30px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+      }
+
+      .concept.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      #progress-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      #progress-container.active {
+        opacity: 1;
+      }
+
+      #progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--accent-color);
+        transition: width 0.5s linear;
+        box-shadow: 0 0 10px var(--accent-color);
+      }
+
+      #slide-counter {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        z-index: 10;
+        font-size: 1.1rem;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 8px 15px;
+        border-radius: 20px;
+        backdrop-filter: blur(5px);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      #slide-counter.active {
+        opacity: 1;
+      }
+
+      #reflexion {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--dark-overlay);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 15;
+        padding: 40px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--transition-slow) ease;
+      }
+
+      #reflexion.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      #reflexion-content {
+        max-width: 1000px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        transform: translateY(20px);
+        transition: transform var(--transition-normal) ease;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      #reflexion.show #reflexion-content {
+        transform: translateY(0);
+      }
+
+      #reflexion-text {
+        font-size: 1.4rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+
+      #reflexion-text strong {
+        color: var(--accent-color);
+        font-weight: 700;
+      }
+
+      #reflexion-btn {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all var(--transition-normal) ease;
+        font-weight: 500;
+        margin-top: 20px;
+      }
+
+      #reflexion-btn:hover {
+        background: white;
+        color: black;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .fade-in {
+        animation: fadeIn 2s ease;
+      }
+
+      @keyframes titlePulse {
+        0% {
+          transform: scale(1);
+          text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+        50% {
+          transform: scale(1.05);
+          text-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+        }
+        100% {
+          transform: scale(1);
+          text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        #main-title {
+          font-size: 2.8rem;
+        }
+
+        #subtitle {
+          font-size: 1.3rem;
+          margin-bottom: 40px;
+        }
+
+        .concept {
+          font-size: 1.3rem;
+          padding: 15px 20px;
+        }
+
+        #reflexion-text {
+          font-size: 1.2rem;
+        }
+
+        #slide-counter {
+          bottom: 20px;
+          left: 20px;
+          font-size: 0.9rem;
+        }
+
+        #reflexion-content {
+          padding: 30px 20px;
+          max-height: 85vh;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #main-title {
+          font-size: 2.2rem;
+        }
+
+        #subtitle {
+          font-size: 1.1rem;
+        }
+
+        .concept {
+          font-size: 1.1rem;
+          padding: 12px 15px;
+        }
+
+        #reflexion-text {
+          font-size: 1rem;
+        }
+
+        .concept-container {
+          padding: 20px;
+        }
+
+        #reflexion-content {
+          padding: 25px 15px;
+        }
+
+        #reflexion-btn {
+          padding: 10px 25px;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="title-screen" class="fade-in">
+      <h1 id="main-title">URABÁ</h1>
+      <h2 id="subtitle">Tierra de Contrastes y Resiliencia</h2>
+      <button id="start-btn">INICIAR CORTOMETRAJE</button>
+    </div>
+
+    <div id="slideshow-container">
+      <!-- Las imágenes se insertarán aquí dinámicamente -->
+    </div>
+
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="slide-counter">
+      <span id="current-slide">1</span> / <span id="total-slides">20</span>
+    </div>
+
+    <div id="reflexion">
+      <div id="reflexion-content">
+        <p id="reflexion-text">
+          Estas imágenes no son solo un recorrido por una región de Colombia.
+          Son un espejo.
+          <br /><br />
+          Cada rostro, cada cicatriz en la tierra, cada río contaminado y cada
+          siembra de esperanza nos interroga: ¿Qué estamos dispuestos a ver?
+          ¿Qué historias estamos eligiendo ignorar?
+          <br /><br />
+          Urabá no es una nota al pie de página en un libro de historia. Es un
+          territorio donde la vida se ha negado a rendirse, donde la dignidad
+          humana ha librado una batalla feroz contra el olvido.
+          <br /><br />
+          La pregunta final no es solo '¿qué vivieron los de Urabá?'. La
+          pregunta que realmente importa es:
+          <strong>¿Y tú? ¿Qué vas a hacer ahora que lo sabes?</strong> La
+          indiferencia es el lujo de quienes no han mirado de frente estas
+          fotografías. El conocimiento conlleva una responsabilidad: la de
+          recordar, la de exigir justicia y la de ser, desde nuestro lugar, un
+          pequeño germen de esa paz por la que Urabá ha luchado con tanta sangre
+          y tanto amor.
+        </p>
+        <button id="reflexion-btn">Volver al Inicio</button>
+      </div>
+    </div>
+
+    <!-- Audio local -->
+    <audio id="background-music" loop>
+      <source src="musica-fondo.mp3" type="audio/mpeg" />
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Configuración del cortometraje
+        const config = {
+          slideDuration: 8000, // 8 segundos por imagen
+          transitionDuration: 1500, // 1.5 segundos de transición
+          totalSlides: 20,
+        };
+
+        // Elementos DOM
+        const titleScreen = document.getElementById("title-screen");
+        const startBtn = document.getElementById("start-btn");
+        const slideshowContainer = document.getElementById(
+          "slideshow-container"
+        );
+        const progressBar = document.getElementById("progress-bar");
+        const progressContainer = document.getElementById("progress-container");
+        const currentSlideElement = document.getElementById("current-slide");
+        const totalSlidesElement = document.getElementById("total-slides");
+        const slideCounter = document.getElementById("slide-counter");
+        const reflexion = document.getElementById("reflexion");
+        const reflexionBtn = document.getElementById("reflexion-btn");
+        const backgroundMusic = document.getElementById("background-music");
+
+        // Estado del cortometraje
+        let currentSlide = 0;
+        let isPlaying = false;
+        let slideInterval;
+
+        // Datos del cortometraje - imágenes y conceptos
+        const slidesData = [
+          {
+            image: "https://pbs.twimg.com/media/E7vlrdLXMAgVhmv.jpg:large",
+            concept:
+              "La tierra madre, exuberante y generosa, que dio origen a todo lo que vendría.",
+          },
+          {
+            image:
+              "https://www.reuters.com/resizer/v2/https%3A%2F%2Farchive-images.prod.global.a201836.reutersmedia.net%2F2021%2F04%2F14%2FLYNXMPEH3D13Z.JPG?auth=575c0971bd30431393eb4489b5c36ba3b4f834cc6300e5bbb9e79fdb3dd24027&width=1080&quality=80",
+            concept:
+              "El 'oro verde' que prometía prosperidad y creó un imperio económico.",
+          },
+          {
+            image:
+              "https://caracol.com.co/resizer/v2/A3HQIUHSKFFNNI2BCUJX6I55SY.jpeg?auth=310a4f80306bd3ff9196e401ec0812196961398dc13439061ef10f48d2d525a2&width=768&height=576&quality=70&smart=true",
+            concept:
+              "El precio del progreso: la transformación forzada del paisaje y el ecosistema.",
+          },
+          {
+            image:
+              "https://img.lalr.co/cms/2017/05/09201120/bananero1005.jpg?r=4_3",
+            concept:
+              "La dignidad del trabajo. La humanidad detrás de cada banano que llega al mundo.",
+          },
+          {
+            image:
+              "https://cloudfront-us-east-1.images.arcpublishing.com/elespectador/4VISREG35RDYZFT2LT57I33MXE.jpg",
+            concept:
+              "El desplazamiento forzado. El instante en que dejas tu vida atrás por la violencia.",
+          },
+          {
+            image:
+              "https://verdadabierta.com/wp-content/uploads/2017/10/paracosbloquebananero300200.jpg",
+            concept:
+              "La presencia omnipresente de los actores armados que disputaron el control del territorio.",
+          },
+          {
+            image:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSougupcKkgujVOUnUoTNAmdVBWEgcMng7Qx2G8L-WFxWFLeMBowk4Fag8H06VWm9PGsUw&usqp=CAU",
+            concept:
+              "El dolor que se convirtió en memoria y en una demanda permanente de justicia.",
+          },
+          {
+            image:
+              "https://unidadbusqueda.gov.co/wp-content/uploads/2024/07/valledupar-cesar-cementerio-ecce-homo-recuperacion-cuerpos-julio-2024_4.jpg",
+            concept:
+              "La tierra que fue forzada a guardar secretos. La verdad que yace bajo la superficie.",
+          },
+          {
+            image:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBtiEWOCEBfAstBWamLCkxRuz7UPt1mfEgioW1fs2Tycj-WgdZkvIfdBC0zyFDT0rXcQg&usqp=CAU",
+            concept:
+              "El arte como arma de resistencia y reconstrucción de la identidad.",
+          },
+          {
+            image:
+              "https://www.unidadsolidaria.gov.co/sites/default/files/archivos/WhatsApp-Image-2023-09-08-at-12.17.12-PM.jpeg",
+            concept:
+              "El poder de la organización social. La semilla de la soberanía territorial.",
+          },
+          {
+            image:
+              "https://files.rcnradio.com/public/2024-01/argemiro_mayo_garcia.jpg?VersionId=9Rs2OioE2ol0GGqnIdk8Hd8PfrHveZM8",
+            concept:
+              "La valentía de quienes defienden la tierra, aun sabiendo el riesgo que eso conlleva.",
+          },
+          {
+            image:
+              "https://imagenes2.eltiempo.com/files/image_1200_535/files/fp/uploads/2024/07/17/66984358c675b.r_d.1499-1000.jpeg",
+            concept:
+              "El territorio y sus habitantes no son los únicos que sufren; la naturaleza también es víctima.",
+          },
+          {
+            image:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3EICEscvFP66-FGofL5x9gsNwj_8cmggghIn1_H15V-vo80F8_yhBCPM6Ss7Olt_GbO8&usqp=CAU",
+            concept:
+              "La autoprotección comunitaria y la defensa de la cultura y el territorio desde la autonomía.",
+          },
+          {
+            image:
+              "https://verdadabierta.com/wp-content/uploads/2019/07/pp57-5.jpg",
+            concept:
+              "El acto de fe más grande: volver a sembrar en la tierra que una vez fue escenario del horror.",
+          },
+          {
+            image:
+              "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEieoHd34EQieRIo7LJg8gnYEh_5LeEi6Q6eTt1aGJlD7xTLL53q-c9m6yR26aXuvvUW-pmFPVxO3iZqDpChz1apTsFWlSYKPoPf3uPjhWNh4BWeK1oScSc12Fko4oD4AtzBj9ouqVjecU0/s1600/Foto0399.jpg",
+            concept:
+              "La promesa de un futuro diferente. La vida que se abre paso contra todo pronóstico.",
+          },
+          {
+            image:
+              "https://cloudfront-us-east-1.images.arcpublishing.com/semana/LCWFRSJUJFFRTA23FWCC2ETAEQ.png",
+            concept:
+              "La economía solidaria y el papel de la mujer como tejedora no solo de hilos, sino de nuevo tejido social.",
+          },
+          {
+            image:
+              "https://caracoltv.brightspotcdn.com/dims4/default/26a558e/2147483647/strip/true/crop/1280x719+0+0/resize/568x319!/quality/75/?url=http%3A%2F%2Fcaracol-brightspot.s3.us-west-2.amazonaws.com%2F2f%2F0b%2F1dce6b0e4b6ebc4e19a1da8fc533%2F720-65.png",
+            concept:
+              "El reencuentro con la tierra no es solo físico, es espiritual y profundamente emotivo.",
+          },
+          {
+            image:
+              "https://www.jep.gov.co/Sala-de-Prensa/PublishingImages/Paginas/en-audiencia-de-observaciones-victimas-pidieron-a-comparecientes-de-la-fuerza-publica-la-verdad-completa-sobre-los-crimene/AudienciaUP-06930.webp",
+            concept:
+              "El difícil, pero necesario, camino de la verdad, la justicia y la no repetición.",
+          },
+          {
+            image:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSPUdAeRD8SlzjMNg6z-VmdFXSS7gH0mDE-ZqMW8MVgArr-4Ryo8fU_y30G2iXPSEtLYE&usqp=CAU",
+            concept:
+              "La belleza indomable que persiste. Urabá como un lugar de contrastes eternos.",
+          },
+          {
+            image:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFtGirZ8lsAz4J1akwMnmgKl7TjRIATeiXagzYRoNjxHmhPcTJE6MSdqRNucglbYqpEDc&usqp=CAU",
+            concept:
+              "El carga con la historia, pero no está dispuesta a repetirla. El futuro de Urabá está en esa mirada.",
+          },
+        ];
+
+        // Inicializar cortometraje
+        function initSlideshow() {
+          // Crear elementos de slide
+          slidesData.forEach((slideData, index) => {
+            const slide = document.createElement("div");
+            slide.className = "slide";
+            slide.style.backgroundImage = `url('${slideData.image}')`;
+
+            const overlay = document.createElement("div");
+            overlay.className = "slide-overlay";
+
+            const conceptContainer = document.createElement("div");
+            conceptContainer.className = "concept-container";
+
+            const concept = document.createElement("div");
+            concept.className = "concept";
+            concept.textContent = slideData.concept;
+            concept.id = `concept-${index}`;
+
+            conceptContainer.appendChild(concept);
+            slide.appendChild(overlay);
+            slide.appendChild(conceptContainer);
+            slideshowContainer.appendChild(slide);
+          });
+
+          // Actualizar contador total
+          totalSlidesElement.textContent = slidesData.length;
+
+          // Mostrar primera slide
+          showSlide(0);
+        }
+
+        // Mostrar slide específica
+        function showSlide(index) {
+          // Actualizar índice actual
+          currentSlide = index;
+
+          // Ocultar todas las slides
+          const slides = document.querySelectorAll(".slide");
+          const concepts = document.querySelectorAll(".concept");
+
+          slides.forEach((slide) => slide.classList.remove("active"));
+          concepts.forEach((concept) => concept.classList.remove("show"));
+
+          // Mostrar slide actual
+          slides[currentSlide].classList.add("active");
+
+          // Mostrar concepto después de un pequeño delay
+          setTimeout(() => {
+            document
+              .getElementById(`concept-${currentSlide}`)
+              .classList.add("show");
+          }, 500);
+
+          // Actualizar contador
+          currentSlideElement.textContent = currentSlide + 1;
+
+          // Actualizar barra de progreso
+          updateProgressBar();
+        }
+
+        // Siguiente slide
+        function nextSlide() {
+          if (currentSlide < slidesData.length - 1) {
+            showSlide(currentSlide + 1);
+          } else {
+            // Mostrar reflexión final
+            showReflexion();
+          }
+        }
+
+        // Actualizar barra de progreso
+        function updateProgressBar() {
+          const progress = ((currentSlide + 1) / slidesData.length) * 100;
+          progressBar.style.width = `${progress}%`;
+        }
+
+        // Iniciar reproducción automática
+        function startSlideshow() {
+          isPlaying = true;
+
+          // Limpiar intervalos existentes
+          clearInterval(slideInterval);
+
+          slideInterval = setInterval(() => {
+            nextSlide();
+          }, config.slideDuration);
+
+          // Reproducir música de fondo
+          backgroundMusic.volume = 0.5;
+          const playPromise = backgroundMusic.play();
+
+          if (playPromise !== undefined) {
+            playPromise.catch((e) => {
+              console.log("Error al reproducir audio:", e);
+            });
+          }
+        }
+
+        // Mostrar reflexión final
+        function showReflexion() {
+          clearInterval(slideInterval);
+          isPlaying = false;
+          backgroundMusic.pause();
+
+          // Ocultar slideshow y mostrar reflexión
+          slideshowContainer.classList.remove("active");
+          progressContainer.classList.remove("active");
+          slideCounter.classList.remove("active");
+
+          setTimeout(() => {
+            reflexion.classList.add("show");
+          }, 1000);
+        }
+
+        // Ocultar reflexión y volver al inicio
+        function backToStart() {
+          reflexion.classList.remove("show");
+
+          setTimeout(() => {
+            // Ocultar slideshow
+            slideshowContainer.classList.remove("active");
+            progressContainer.classList.remove("active");
+            slideCounter.classList.remove("active");
+
+            // Mostrar pantalla de inicio
+            titleScreen.style.display = "flex";
+
+            // Resetear slideshow
+            resetSlideshow();
+          }, 1000);
+        }
+
+        // Resetear slideshow
+        function resetSlideshow() {
+          currentSlide = 0;
+          showSlide(0);
+          progressBar.style.width = "0%";
+
+          // Reiniciar audio
+          if (backgroundMusic) {
+            backgroundMusic.currentTime = 0;
+          }
+        }
+
+        // Event Listeners
+        startBtn.addEventListener("click", function () {
+          // Ocultar pantalla de inicio
+          titleScreen.style.display = "none";
+
+          // Mostrar slideshow
+          slideshowContainer.classList.add("active");
+          progressContainer.classList.add("active");
+          slideCounter.classList.add("active");
+
+          // Iniciar slideshow
+          startSlideshow();
+        });
+
+        reflexionBtn.addEventListener("click", backToStart);
+
+        // Inicializar
+        initSlideshow();
+      });
+    </script>
+  </body>
+</html>
