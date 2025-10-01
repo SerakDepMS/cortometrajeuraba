@@ -51,14 +51,30 @@
         padding: 20px;
       }
 
+      /* SOLUCIÓN DEFINITIVA: Animación que NO causa Layout ni Paint */
+      @keyframes titlePulse {
+        0%,
+        100% {
+          opacity: 1;
+          filter: brightness(1) drop-shadow(0 0 20px rgba(231, 76, 60, 0.5));
+        }
+        50% {
+          opacity: 0.95;
+          filter: brightness(1.1) drop-shadow(0 0 30px rgba(231, 76, 60, 0.8));
+        }
+      }
+
       #main-title {
         font-size: 4.5rem;
         margin-bottom: 20px;
         text-align: center;
-        text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
-        animation: titlePulse 4s infinite;
+        color: white;
+        animation: titlePulse 4s infinite ease-in-out;
         font-weight: 700;
         letter-spacing: 3px;
+        -webkit-font-smoothing: antialiased;
+        position: relative;
+        z-index: 1;
       }
 
       #subtitle {
@@ -184,9 +200,10 @@
         transform: translateY(30px);
         transition: all var(--transition-normal) ease;
         font-weight: 500;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.6);
         padding: 20px 30px;
         border-radius: 10px;
+        -webkit-backdrop-filter: blur(5px);
         backdrop-filter: blur(5px);
       }
 
@@ -225,9 +242,10 @@
         left: 30px;
         z-index: 10;
         font-size: 1.1rem;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.7);
         padding: 8px 15px;
         border-radius: 20px;
+        -webkit-backdrop-filter: blur(5px);
         backdrop-filter: blur(5px);
         opacity: 0;
         transition: opacity 0.5s ease;
@@ -262,11 +280,12 @@
 
       #reflexion-content {
         max-width: 1000px;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
         padding: 40px;
         border-radius: 15px;
         text-align: center;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
         transform: translateY(20px);
         transition: transform var(--transition-normal) ease;
@@ -289,7 +308,15 @@
         font-weight: 700;
       }
 
-      #reflexion-btn {
+      .reflexion-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+
+      .reflexion-btn {
         background: transparent;
         color: white;
         border: 2px solid white;
@@ -299,33 +326,202 @@
         cursor: pointer;
         transition: all var(--transition-normal) ease;
         font-weight: 500;
-        margin-top: 20px;
+        min-width: 160px;
       }
 
-      #reflexion-btn:hover {
+      .reflexion-btn:hover {
         background: white;
         color: black;
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
       }
 
-      .fade-in {
-        animation: fadeIn 2s ease;
+      /* Secciones de Créditos y Fuentes */
+      #creditos,
+      #fuentes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--dark-overlay);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 25;
+        padding: 40px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--transition-slow) ease;
       }
 
-      @keyframes titlePulse {
-        0% {
-          transform: scale(1);
-          text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
-        }
-        50% {
-          transform: scale(1.05);
-          text-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
-        }
-        100% {
-          transform: scale(1);
-          text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
-        }
+      #creditos.show,
+      #fuentes.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      #creditos-content,
+      #fuentes-content {
+        max-width: 900px;
+        background: rgba(0, 0, 0, 0.85);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        transform: translateY(20px);
+        transition: transform var(--transition-normal) ease;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      #creditos.show #creditos-content,
+      #fuentes.show #fuentes-content {
+        transform: translateY(0);
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: var(--accent-color);
+        text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+      }
+
+      .creditos-section {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .creditos-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+        color: var(--accent-color);
+      }
+
+      .creditos-section p,
+      .creditos-section ul {
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      .creditos-section ul {
+        padding-left: 20px;
+        margin-top: 10px;
+      }
+
+      .creditos-section li {
+        margin-bottom: 8px;
+      }
+
+      #pdf-container {
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      #pdf-container a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color var(--transition-fast) ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        border: 1px solid var(--accent-color);
+        border-radius: 5px;
+        background: rgba(231, 76, 60, 0.1);
+      }
+
+      #pdf-container a:hover {
+        background: var(--accent-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+      }
+
+      /* Estilos para los botones de fuentes */
+      .fuentes-list {
+        list-style-type: none;
+        width: 100%;
+      }
+
+      .fuente-button {
+        display: block;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        text-align: left;
+        cursor: pointer;
+        transition: all var(--transition-fast) ease;
+        text-decoration: none;
+        word-break: break-all;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .fuente-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .fuente-button .button-content {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .fuente-button .button-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--accent-color);
+      }
+
+      .fuente-button .button-url {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        word-break: break-all;
+      }
+
+      .close-btn {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        padding: 10px 25px;
+        font-size: 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all var(--transition-normal) ease;
+        font-weight: 500;
+        margin-top: 20px;
+      }
+
+      .close-btn:hover {
+        background: white;
+        color: black;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .copyright {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 0.9rem;
+        opacity: 0.7;
+      }
+
+      .fade-in {
+        animation: fadeIn 2s ease;
       }
 
       @keyframes fadeIn {
@@ -334,6 +530,23 @@
         }
         to {
           opacity: 1;
+        }
+      }
+
+      /* Mejoras para navegadores que no soportan backdrop-filter */
+      @supports not (backdrop-filter: blur(5px)) {
+        .concept {
+          background: rgba(0, 0, 0, 0.8);
+        }
+
+        #slide-counter {
+          background: rgba(0, 0, 0, 0.9);
+        }
+
+        #reflexion-content,
+        #creditos-content,
+        #fuentes-content {
+          background: rgba(0, 0, 0, 0.95);
         }
       }
 
@@ -363,9 +576,30 @@
           font-size: 0.9rem;
         }
 
-        #reflexion-content {
+        #reflexion-content,
+        #creditos-content,
+        #fuentes-content {
           padding: 30px 20px;
           max-height: 85vh;
+        }
+
+        .section-title {
+          font-size: 2rem;
+        }
+
+        .reflexion-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .reflexion-btn,
+        .close-btn {
+          width: 100%;
+          max-width: 250px;
+        }
+
+        .fuente-button {
+          padding: 12px;
         }
       }
 
@@ -391,13 +625,37 @@
           padding: 20px;
         }
 
-        #reflexion-content {
+        #reflexion-content,
+        #creditos-content,
+        #fuentes-content {
           padding: 25px 15px;
         }
 
-        #reflexion-btn {
+        .reflexion-btn,
+        .close-btn {
           padding: 10px 25px;
           font-size: 1rem;
+        }
+
+        .section-title {
+          font-size: 1.7rem;
+        }
+
+        .creditos-section h3 {
+          font-size: 1.1rem;
+        }
+
+        .creditos-section p,
+        .creditos-section ul {
+          font-size: 1rem;
+        }
+
+        .fuente-button {
+          padding: 10px;
+        }
+
+        .fuente-button .button-url {
+          font-size: 0.8rem;
         }
       }
     </style>
@@ -406,7 +664,7 @@
     <div id="title-screen" class="fade-in">
       <h1 id="main-title">URABÁ</h1>
       <h2 id="subtitle">Tierra de Contrastes y Resiliencia</h2>
-      <button id="start-btn">INICIAR CORTOMETRAJE</button>
+      <button id="start-btn" type="button">INICIAR CORTOMETRAJE</button>
     </div>
 
     <div id="slideshow-container">
@@ -444,13 +702,156 @@
           pequeño germen de esa paz por la que Urabá ha luchado con tanta sangre
           y tanto amor.
         </p>
-        <button id="reflexion-btn">Volver al Inicio</button>
+        <div class="reflexion-buttons">
+          <button id="creditos-btn" class="reflexion-btn" type="button">
+            Créditos
+          </button>
+          <button id="fuentes-btn" class="reflexion-btn" type="button">
+            Fuentes
+          </button>
+          <button id="reflexion-volver-btn" class="reflexion-btn" type="button">
+            Volver al Inicio
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Audio local -->
-    <audio id="background-music" loop>
+    <!-- Sección de Créditos -->
+    <div id="creditos">
+      <div id="creditos-content">
+        <h2 class="section-title">Créditos</h2>
+
+        <div class="creditos-section">
+          <h3>Dirección y Guion</h3>
+          <p>Manasés Diaz Arcia</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Investigación y Fotografía</h3>
+          <p>Jhorvis Jose Montes Branquicett</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Diseño y Dirección de Arte</h3>
+          <p>Hugo de Jesús Martinez Mendoza</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Desarrollo Web y Programación</h3>
+          <p>Manasés Diaz Arcia</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Producción Audiovisual</h3>
+          <p>Gabriel Montes Altamar</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Asesoría Histórica</h3>
+          <p>Katherine Antonella Chirino Nuñez</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Control de Calidad y Rigor Histórico</h3>
+          <p>Alondra Martinez Carrasquilla</p>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Contexto Histórico del Urabá</h3>
+          <div id="pdf-container">
+            <p>Documento PDF con conceptos detallados:</p>
+            <p><strong>Autor:</strong> Hugo de Jesús Martinez Mendoza</p>
+            <a href="UrabÁ_20250930_095448_0000.pdf" target="_blank">
+              <i class="fas fa-file-pdf"></i> Ver documento histórico
+            </a>
+          </div>
+        </div>
+
+        <div class="creditos-section">
+          <h3>Agradecimientos Especiales</h3>
+          <p>
+            Este proyecto es un ejercicio de memoria y reconocimiento a la
+            distancia. Aunque no hemos pisado físicamente el territorio de
+            Urabá, hemos caminado por sus historias, sus luchas y sus esperanzas
+            a través del testimonio de otros.
+          </p>
+          <p>Nuestro profundo agradecimiento a:</p>
+          <ul>
+            <li>
+              Los fotoperiodistas, documentalistas y archivos históricos cuyas
+              imágenes nos permitieron asomarnos a la realidad de Urabá. Su
+              trabajo es un puente que conecta realidades distantes.
+            </li>
+            <li>
+              Los periodistas e investigadores que durante años han documentado
+              la compleja historia de esta región, haciendo posible que desde la
+              distancia pudiéramos comprender sus dinámicas.
+            </li>
+            <li>
+              Las organizaciones de derechos humanos y comunidades que, a través
+              de sus informes y testimonios públicos, mantienen viva la demanda
+              de verdad y justicia.
+            </li>
+            <li>
+              Los creadores de contenido y medios locales cuyos registros
+              audiovisuales nos permitieron escuchar las voces de Urabá
+              directamente.
+            </li>
+            <li>
+              Cada miembro de este equipo que dedicó horas de investigación,
+              análisis y creación para tejer estas narrativas con el respeto y
+              rigor que merece la historia de Urabá.
+            </li>
+          </ul>
+          <p>
+            Este cortometraje fotográfico es un humilde intento por amplificar
+            ecos lejanos, por hacer visible lo que muchos insisten en olvidar.
+            Reconocemos que es una mirada desde afuera, pero hecha con la
+            intención de honrar la dignidad de quienes habitan ese territorio.
+          </p>
+          <p>
+            La memoria no requiere haber estado allí; solo requiere la voluntad
+            de no permanecer indiferente.
+          </p>
+        </div>
+
+        <p class="copyright">
+          © 2025 SerakDep MS. Todos los derechos reservados.
+        </p>
+
+        <button id="creditos-volver-btn" class="close-btn" type="button">
+          Volver a la Reflexión
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección de Fuentes -->
+    <div id="fuentes">
+      <div id="fuentes-content">
+        <h2 class="section-title">Fuentes</h2>
+        <p>Lista de fuentes de las imágenes utilizadas en este proyecto:</p>
+
+        <div class="fuentes-list">
+          <!-- Los botones de fuentes se insertarán dinámicamente aquí -->
+        </div>
+
+        <p class="copyright">
+          © 2025 SerakDep MS. Todos los derechos reservados.
+        </p>
+
+        <button id="fuentes-volver-btn" class="close-btn" type="button">
+          Volver a la Reflexión
+        </button>
+      </div>
+    </div>
+
+    <!--Audio -->
+    <audio id="background-music" loop preload="none">
       <source src="musica-fondo.mp3" type="audio/mpeg" />
+      <source
+        src="https://assets.mixkit.co/music/preview/mixkit-deep-urban-623.mp3"
+        type="audio/mpeg"
+      />
       Tu navegador no soporta el elemento de audio.
     </audio>
 
@@ -475,134 +876,213 @@
         const totalSlidesElement = document.getElementById("total-slides");
         const slideCounter = document.getElementById("slide-counter");
         const reflexion = document.getElementById("reflexion");
-        const reflexionBtn = document.getElementById("reflexion-btn");
+        const reflexionVolverBtn = document.getElementById(
+          "reflexion-volver-btn"
+        );
+        const creditosBtn = document.getElementById("creditos-btn");
+        const fuentesBtn = document.getElementById("fuentes-btn");
+        const creditos = document.getElementById("creditos");
+        const fuentes = document.getElementById("fuentes");
+        const creditosVolverBtn = document.getElementById(
+          "creditos-volver-btn"
+        );
+        const fuentesVolverBtn = document.getElementById("fuentes-volver-btn");
         const backgroundMusic = document.getElementById("background-music");
+        const fuentesList = document.querySelector(".fuentes-list");
 
         // Estado del cortometraje
         let currentSlide = 0;
         let isPlaying = false;
         let slideInterval;
+        let musicAvailable = false;
 
-        // Datos del cortometraje - imágenes y conceptos
+        // Verificar disponibilidad del audio
+        function checkAudioAvailability() {
+          return new Promise((resolve) => {
+            // Intentar cargar el audio
+            backgroundMusic.load();
+
+            backgroundMusic.addEventListener("canplaythrough", () => {
+              musicAvailable = true;
+              resolve(true);
+            });
+
+            backgroundMusic.addEventListener("error", () => {
+              musicAvailable = false;
+              console.log("Audio no disponible. Continuando sin música.");
+              resolve(false);
+            });
+
+            // Timeout
+            setTimeout(() => {
+              if (!musicAvailable) {
+                console.log(
+                  "Timeout: Audio no disponible. Continuando sin música."
+                );
+                resolve(false);
+              }
+            }, 3000);
+          });
+        }
+
+        // Datos del cortometraje
         const slidesData = [
           {
             image: "https://pbs.twimg.com/media/E7vlrdLXMAgVhmv.jpg:large",
             concept:
               "La tierra madre, exuberante y generosa, que dio origen a todo lo que vendría.",
+            fuente:
+              "https://www.facebook.com/GobAntioquia/posts/el-golfo-de-urab%C3%A1-es-una-formaci%C3%B3n-natural-majestuosa-el-mar-se-abre-paso-por-nu/4458437190855024/",
           },
           {
             image:
               "https://www.reuters.com/resizer/v2/https%3A%2F%2Farchive-images.prod.global.a201836.reutersmedia.net%2F2021%2F04%2F14%2FLYNXMPEH3D13Z.JPG?auth=575c0971bd30431393eb4489b5c36ba3b4f834cc6300e5bbb9e79fdb3dd24027&width=1080&quality=80",
             concept:
               "El 'oro verde' que prometía prosperidad y creó un imperio económico.",
+            fuente:
+              "https://www.reuters.com/article/world/americas/colombia-apunta-a-exportar-120-millones-de-cajas-de-banano-en-2021-idUSKBN2C129M/",
           },
           {
             image:
               "https://caracol.com.co/resizer/v2/A3HQIUHSKFFNNI2BCUJX6I55SY.jpeg?auth=310a4f80306bd3ff9196e401ec0812196961398dc13439061ef10f48d2d525a2&width=768&height=576&quality=70&smart=true",
             concept:
               "El precio del progreso: la transformación forzada del paisaje y el ecosistema.",
+            fuente:
+              "https://caracol.com.co/2024/05/10/uraba-la-exportacion-de-banano-esta-afectada-mas-de-un-millon-de-matas-se-han-perdido/",
           },
           {
             image:
-              "https://img.lalr.co/cms/2017/05/09201120/bananero1005.jpg?r=4_3",
+              "https://img.lalr.co/cms/2017/05/09201120/bananero1005.jpg?r=16_9",
             concept:
               "La dignidad del trabajo. La humanidad detrás de cada banano que llega al mundo.",
+            fuente:
+              "https://www.agronegocios.co/agricultura/formacion-dual-busca-generar-empleo-juvenil-para-sector-bananero-en-uraba-2622707",
           },
           {
             image:
-              "https://www.semana.com/resizer/rA6q6bkQ4sdLtapCOsNwziL9qfM=/1280x720/smart/filters:format(jpg):quality(80)/cloudfront-us-east-1.images.arcpublishing.com/semana/KEWIP7RIZREPNGEDXXFHAD4KBU.jpg",
+              "https://www.elespectador.com/resizer/v2/4VISREG35RDYZFT2LT57I33MXE.jpg?auth=9e446abe81733cd7e393fadda453e7d3d64ba79810e3ac391b7e99a4abebf4a9&width=1110&height=739&smart=true&quality=60",
             concept:
               "El desplazamiento forzado. El instante en que dejas tu vida atrás por la violencia.",
+            fuente:
+              "https://www.elespectador.com/colombia-20/paz-y-memoria/dia-de-refugiados-victimas-de-desplazamiento-luchan-por-formalizacion-en-antioquia-cacarica/",
           },
           {
             image:
               "https://verdadabierta.com/wp-content/uploads/2017/10/paracosbloquebananero300200.jpg",
             concept:
               "La presencia omnipresente de los actores armados que disputaron el control del territorio.",
+            fuente:
+              "https://verdadabierta.com/los-castano-los-tangeros-y-el-origen-del-bloque-bananero-en-el-uraba/",
           },
           {
             image:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSougupcKkgujVOUnUoTNAmdVBWEgcMng7Qx2G8L-WFxWFLeMBowk4Fag8H06VWm9PGsUw&usqp=CAU",
+              "https://wri-irg.org/sites/default/files/public_files/styles/max_1300x1300/public/images/colombia%202.home.jpg?itok=zhWAhKr3",
             concept:
               "El dolor que se convirtió en memoria y en una demanda permanente de justicia.",
+            fuente:
+              "https://wri-irg.org/es/story/2016/colombia-la-comunidad-de-paz-de-san-jose-de-apartado",
           },
           {
             image:
               "https://unidadbusqueda.gov.co/wp-content/uploads/2024/07/valledupar-cesar-cementerio-ecce-homo-recuperacion-cuerpos-julio-2024_4.jpg",
             concept:
               "La tierra que fue forzada a guardar secretos. La verdad que yace bajo la superficie.",
+            fuente:
+              "https://unidadbusqueda.gov.co/actualidad/valledupar-cesar-cementerio-ecce-homo-recuperacion-cuerpos-julio-2024/",
           },
           {
             image:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBtiEWOCEBfAstBWamLCkxRuz7UPt1mfEgioW1fs2Tycj-WgdZkvIfdBC0zyFDT0rXcQg&usqp=CAU",
+              "https://wwwlasnoticiasenredco.wordpress.com/wp-content/uploads/2019/01/7bccc-50313557_2167590013504852_4707365593290899456_n.jpg",
             concept:
               "El arte como arma de resistencia y reconstrucción de la identidad.",
+            fuente:
+              "https://wwwlasnoticiasenredco.wordpress.com/2019/02/20/el-mural-mas-grande-de-uraba-esta-en-apartado-30/",
           },
           {
             image:
-              "https://www.unidadsolidaria.gov.co/sites/default/files/archivos/WhatsApp-Image-2023-09-08-at-12.17.12-PM.jpeg",
+              "https://girardotainforma.com/wp-content/uploads/2024/08/Mas-de-500-personas-del-Uraba-antioqueno-se-uniran-a.jpg",
             concept:
               "El poder de la organización social. La semilla de la soberanía territorial.",
+            fuente:
+              "https://girardotainforma.com/2024/08/29/mas-de-500-personas-del-uraba-antioqueno-se-uniran-a-marcha-en-bogota/",
           },
           {
             image:
-              "https://files.rcnradio.com/public/2024-01/argemiro_mayo_garcia.jpg?VersionId=9Rs2OioE2ol0GGqnIdk8Hd8PfrHveZM8",
+              "https://estaticos.elcolombiano.com/binrepository/580x365/0c0/580d365/none/11101/XVBG/befunky-collage-8_39148411_20211215190436.jpg",
             concept:
               "La valentía de quienes defienden la tierra, aun sabiendo el riesgo que eso conlleva.",
+            fuente:
+              "https://www.elcolombiano.com/antioquia/lideres-sociales-asesinados-en-antioquia-en-2021-EB16177399",
           },
           {
             image:
-              "https://imagenes2.eltiempo.com/files/image_1200_535/files/fp/uploads/2024/07/17/66984358c675b.r_d.1499-1000.jpeg",
+              "https://imagenes2.eltiempo.com/files/image_1200_535/uploads/2019/10/11/5da114dcf26a3.jpeg",
             concept:
               "El territorio y sus habitantes no son los únicos que sufren; la naturaleza también es víctima.",
+            fuente:
+              "https://www.eltiempo.com/colombia/medellin/contaminacion-en-el-uraba-antioqueno-por-que-hay-manchas-en-el-golfo-de-uraba-422396",
           },
           {
             image:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3EICEscvFP66-FGofL5x9gsNwj_8cmggghIn1_H15V-vo80F8_yhBCPM6Ss7Olt_GbO8&usqp=CAU",
+              "https://caracoltv.brightspotcdn.com/dims4/default/b71b593/2147483647/strip/true/crop/1200x675+0+0/resize/768x432!/format/webp/quality/75/?url=http%3A%2F%2Fcaracol-brightspot.s3.us-west-2.amazonaws.com%2F16%2F35%2F3e6e4c3545959a3f580116a6ca87%2Fconsejo-de-comunidades-negras-en-belen-de-bajira.jpg",
             concept:
               "La autoprotección comunitaria y la defensa de la cultura y el territorio desde la autonomía.",
+            fuente:
+              "https://www.bluradio.com/regiones/antioquia/consejos-comunitarios-exigen-implementacion-de-acuerdo-de-paz-en-uraba-y-choco-rg10",
           },
           {
             image:
-              "https://verdadabierta.com/wp-content/uploads/2019/07/pp57-5.jpg",
+              "https://elnuevooriente.com/wp-content/uploads/2023/05/FwbWdDtWABUslCx-768x512.jpg",
             concept:
               "El acto de fe más grande: volver a sembrar en la tierra que una vez fue escenario del horror.",
+            fuente:
+              "https://elnuevooriente.com/fedepalma-entrega-plantulas-a-pequenos-palmicultores-de-uraba-para-sembrar-paz-y-cultivar-progreso/",
           },
           {
             image:
-              "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEieoHd34EQieRIo7LJg8gnYEh_5LeEi6Q6eTt1aGJlD7xTLL53q-c9m6yR26aXuvvUW-pmFPVxO3iZqDpChz1apTsFWlSYKPoPf3uPjhWNh4BWeK1oScSc12Fko4oD4AtzBj9ouqVjecU0/s1600/Foto0399.jpg",
+              "https://colombiamaspositiva.com/wp-content/uploads/2019/03/NEGRITAS-1068x712.jpg",
             concept:
               "La promesa de un futuro diferente. La vida que se abre paso contra todo pronóstico.",
+            fuente:
+              "https://colombiamaspositiva.com/sin-categoria/el-uraba-antioqueno-disfruto-de-la-feria-de-servicios-antioquia-cercana.html",
           },
           {
             image:
               "https://cloudfront-us-east-1.images.arcpublishing.com/semana/LCWFRSJUJFFRTA23FWCC2ETAEQ.png",
             concept:
               "La economía solidaria y el papel de la mujer como tejedora no solo de hilos, sino de nuevo tejido social.",
+            fuente:
+              "https://www.semana.com/web/articulo/las-tejedoras-laboriosas-de-uraba/1722/",
           },
           {
             image:
-              "https://caracoltv.brightspotcdn.com/dims4/default/26a558e/2147483647/strip/true/crop/1280x719+0+0/resize/568x319!/quality/75/?url=http%3A%2F%2Fcaracol-brightspot.s3.us-west-2.amazonaws.com%2F2f%2F0b%2F1dce6b0e4b6ebc4e19a1da8fc533%2F720-65.png",
+              "https://unidadbusqueda.gov.co/wp-content/uploads/2024/09/uraba-arboletes-encuentro-hermanos-buscadores-septiembre-2024_1.jpg",
             concept:
               "El reencuentro con la tierra no es solo físico, es espiritual y profundamente emotivo.",
+            fuente:
+              "https://unidadbusqueda.gov.co/actualidad/uraba-arboletes-encuentro-hermanos-buscadores-septiembre-2024/",
           },
           {
-            image:
-              "https://www.jep.gov.co/Sala-de-Prensa/PublishingImages/Paginas/en-audiencia-de-observaciones-victimas-pidieron-a-comparecientes-de-la-fuerza-publica-la-verdad-completa-sobre-los-crimene/AudienciaUP-06930.webp",
+            image: "https://www.jep.gov.co/macrocasos/images/cause-4-1.jpg",
             concept:
               "Es difícil, pero necesario, el camino de la verdad, la justicia y la no repetición.",
+            fuente: "https://www.jep.gov.co/macrocasos/caso04.html#container",
           },
           {
             image:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSPUdAeRD8SlzjMNg6z-VmdFXSS7gH0mDE-ZqMW8MVgArr-4Ryo8fU_y30G2iXPSEtLYE&usqp=CAU",
+              "https://seecolombia.travel/blog/wp-content/uploads/2021/09/guia-de-viaje-a-uraba-lugares-imperdibles-3-1024x575.jpg",
             concept:
               "La belleza indomable que persiste. Urabá como un lugar de contrastes eternos.",
+            fuente:
+              "https://seecolombia.travel/blog/2021/09/guia-de-viaje-a-uraba-lugares-imperdibles/",
           },
           {
             image:
               "https://wp.es.aleteia.org/wp-content/uploads/sites/7/2018/02/web3-colombia-uraba-women-tourism-facebook-secretarc3ada-de-las-mujeres-de-antioquia.jpg",
             concept:
               "Ellas cargan con la historia, pero no están dispuestas a repetirla. El futuro de Urabá está en esa mirada.",
+            fuente:
+              "https://es.aleteia.org/2018/02/16/colombia-las-100-mujeres-guardianas-de-las-playas-de-uraba/",
           },
         ];
 
@@ -636,6 +1116,32 @@
 
           // Mostrar primera slide
           showSlide(0);
+        }
+
+        // Inicializar sección de fuentes
+        function initFuentes() {
+          slidesData.forEach((slideData, index) => {
+            const fuenteButton = document.createElement("a");
+            fuenteButton.className = "fuente-button";
+            fuenteButton.href = slideData.fuente;
+            fuenteButton.target = "_blank";
+
+            const buttonContent = document.createElement("div");
+            buttonContent.className = "button-content";
+
+            const buttonTitle = document.createElement("div");
+            buttonTitle.className = "button-title";
+            buttonTitle.textContent = `Imagen ${index + 1}`;
+
+            const buttonUrl = document.createElement("div");
+            buttonUrl.className = "button-url";
+            buttonUrl.textContent = slideData.fuente;
+
+            buttonContent.appendChild(buttonTitle);
+            buttonContent.appendChild(buttonUrl);
+            fuenteButton.appendChild(buttonContent);
+            fuentesList.appendChild(fuenteButton);
+          });
         }
 
         // Mostrar slide específica
@@ -683,8 +1189,8 @@
           progressBar.style.width = `${progress}%`;
         }
 
-        // Iniciar reproducción automática
-        function startSlideshow() {
+        // SOLUCIÓN: Función mejorada para reproducir música
+        async function startSlideshow() {
           isPlaying = true;
 
           // Limpiar intervalos existentes
@@ -694,14 +1200,16 @@
             nextSlide();
           }, config.slideDuration);
 
-          // Reproducir música de fondo
-          backgroundMusic.volume = 0.5;
-          const playPromise = backgroundMusic.play();
-
-          if (playPromise !== undefined) {
-            playPromise.catch((e) => {
-              console.log("Error al reproducir audio:", e);
-            });
+          // Reproducir música de fondo si está disponible
+          if (musicAvailable) {
+            try {
+              backgroundMusic.volume = 0.4;
+              await backgroundMusic.play();
+              console.log("Música de fondo reproduciéndose");
+            } catch (error) {
+              console.log("No se pudo reproducir la música:", error);
+              // Continuar sin música si hay error
+            }
           }
         }
 
@@ -709,7 +1217,12 @@
         function showReflexion() {
           clearInterval(slideInterval);
           isPlaying = false;
-          backgroundMusic.pause();
+
+          // Pausar música si está reproduciéndose
+          if (musicAvailable) {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+          }
 
           // Ocultar slideshow y mostrar reflexión
           slideshowContainer.classList.remove("active");
@@ -724,6 +1237,8 @@
         // Ocultar reflexión y volver al inicio
         function backToStart() {
           reflexion.classList.remove("show");
+          creditos.classList.remove("show");
+          fuentes.classList.remove("show");
 
           setTimeout(() => {
             // Ocultar slideshow
@@ -746,33 +1261,73 @@
           progressBar.style.width = "0%";
 
           // Reiniciar audio
-          if (backgroundMusic) {
+          if (musicAvailable) {
             backgroundMusic.currentTime = 0;
           }
         }
 
-        // Event Listeners
-        startBtn.addEventListener("click", function () {
-          // Ocultar pantalla de inicio
-          titleScreen.style.display = "none";
+        // Mostrar sección de créditos
+        function showCreditos() {
+          reflexion.classList.remove("show");
+          setTimeout(() => {
+            creditos.classList.add("show");
+          }, 500);
+        }
 
-          // Mostrar slideshow
-          slideshowContainer.classList.add("active");
-          progressContainer.classList.add("active");
-          slideCounter.classList.add("active");
+        // Mostrar sección de fuentes
+        function showFuentes() {
+          reflexion.classList.remove("show");
+          setTimeout(() => {
+            fuentes.classList.add("show");
+          }, 500);
+        }
 
-          // Iniciar slideshow
-          startSlideshow();
-        });
+        // Volver a la reflexión desde créditos o fuentes
+        function volverAReflexion() {
+          creditos.classList.remove("show");
+          fuentes.classList.remove("show");
+          setTimeout(() => {
+            reflexion.classList.add("show");
+          }, 500);
+        }
 
-        reflexionBtn.addEventListener("click", backToStart);
+        // Inicializar todo cuando el DOM esté listo
+        async function initialize() {
+          // Primero verificar disponibilidad del audio
+          await checkAudioAvailability();
 
-        // Inicializar
-        initSlideshow();
+          // Luego inicializar el resto
+          initSlideshow();
+          initFuentes();
+
+          // Configurar event listeners
+          startBtn.addEventListener("click", function () {
+            // Ocultar pantalla de inicio
+            titleScreen.style.display = "none";
+
+            // Mostrar slideshow
+            slideshowContainer.classList.add("active");
+            progressContainer.classList.add("active");
+            slideCounter.classList.add("active");
+
+            // Iniciar slideshow
+            startSlideshow();
+          });
+
+          reflexionVolverBtn.addEventListener("click", backToStart);
+          creditosBtn.addEventListener("click", showCreditos);
+          fuentesBtn.addEventListener("click", showFuentes);
+          creditosVolverBtn.addEventListener("click", volverAReflexion);
+          fuentesVolverBtn.addEventListener("click", volverAReflexion);
+        }
+
+        // Inicializar la aplicación
+        initialize();
       });
     </script>
   </body>
 </html>
+
 
 
 
