@@ -12,7 +12,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     reviewers:
-      - "D3B1A2C4F5E67890" # Reemplaza con tu usuario de GitHub
+      - "D3B1A2C4F5E67890"  # ⬅️ Reemplaza con tu usuario REAL de GitHub
 
   # Actualizaciones para GitHub Actions
   - package-ecosystem: "github-actions"
@@ -26,4 +26,4 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 3  # ⬅️ Corregido - había un typo
