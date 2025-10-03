@@ -12,7 +12,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     reviewers:
-      - "ManasésDiaz" # Reemplaza con tu usuario de GitHub
+      - "D3B1A2C4F5E67890" # Reemplaza con tu usuario de GitHub
 
   # Actualizaciones para GitHub Actions
   - package-ecosystem: "github-actions"
