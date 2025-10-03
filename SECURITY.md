@@ -12,29 +12,39 @@ currently being supported with security updates.
 | 4.0.x   | :white_check_mark: |
 | < 4.0   | :x:                |
 
-## Reporting a Vulnerability
 
-Email: serakdepmsoficial7@gmail.com
-Asunto: [VULNERABILIDAD] Cortometraje Urabá
+## 📧 Reportar una Vulnerabilidad
 
-Información requerida:
+| **Contacto** | **Detalles** |
+|--------------|--------------|
+| **Email** | `serakdepmsoficial7@gmail.com` |
+| **Asunto** | `[VULNERABILIDAD] Cortometraje Urabá` |
 
-Tipo de vulnerabilidad
+## 📋 Información Requerida
 
--URL afectada.
+| **Campo** | **Descripción** |
+|-----------|-----------------|
+| **Tipo de vulnerabilidad** | XSS, CSRF, Data Leak, etc. |
+| **URL afectada** | Enlace específico donde ocurre |
+| **Pasos para reproducir** | Instrucciones detalladas paso a paso |
+| **Navegador/SO** | Ej: Chrome 119 / Windows 11 |
+| **Impacto potencial** | Consecuencias de la vulnerabilidad |
 
--Pasos para reproducir.
+## ⏱️ Tiempos de Respuesta
 
--Navegador/SO.
+| **Acción** | **Plazo** |
+|------------|-----------|
+| **Confirmación** | 48 horas |
+| **Parche crítico** | 7 días |
+| **Actualizaciones** | Semanales |
 
--Impacto potencial.
+## 🏷️ Versiones Soportadas
 
-Tiempos de respuesta:
+| **Versión** | **Estado** | **Soporte** |
+|-------------|------------|--------------|
+| **1.0.x** | ✅ Activo | Soporte completo |
+| **< 1.0** | ❌ Inactivo | Sin soporte |
 
--Confirmación: 48 horas.
+---
 
--Parche crítico: 7 días.
-
-Actualizaciones semanales
-
-*Última actualización: 2025-10-03*
+**Última actualización:** 2025-10-03
