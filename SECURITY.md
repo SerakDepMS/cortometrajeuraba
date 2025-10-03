@@ -14,8 +14,27 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Email: serakdepmsoficial7@gmail.com
+Asunto: [VULNERABILIDAD] Cortometraje Urabá
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Información requerida:
+
+Tipo de vulnerabilidad
+
+URL afectada
+
+Pasos para reproducir
+
+Navegador/SO
+
+Impacto potencial
+
+Tiempos de respuesta:
+
+Confirmación: 48 horas
+
+Parche crítico: 7 días
+
+Actualizaciones semanales
+
+*Última actualización: 2025-10-03*
