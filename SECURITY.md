@@ -21,19 +21,19 @@ Información requerida:
 
 Tipo de vulnerabilidad
 
-URL afectada
+-URL afectada.
 
-Pasos para reproducir
+-Pasos para reproducir.
 
-Navegador/SO
+-Navegador/SO.
 
-Impacto potencial
+-Impacto potencial.
 
 Tiempos de respuesta:
 
-Confirmación: 48 horas
+-Confirmación: 48 horas.
 
-Parche crítico: 7 días
+-Parche crítico: 7 días.
 
 Actualizaciones semanales
 
